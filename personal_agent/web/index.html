@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal Agent</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">◈</div>
+      <div>
+        <div class="brand-name">Personal Agent</div>
+        <div class="brand-meta" id="brandMeta">local-first</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item is-active" data-view="dashboard"><span>◈</span> Dashboard</button>
+      <button class="nav-item" data-view="tasks"><span>✓</span> Tasks <b class="pill" id="navTaskCount">0</b></button>
+      <button class="nav-item" data-view="schedule"><span>▤</span> Schedule</button>
+      <button class="nav-item" data-view="drafts"><span>✎</span> Drafts <b class="pill" id="navDraftCount">0</b></button>
+      <button class="nav-item" data-view="memory"><span>◇</span> Memory</button>
+      <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="engine-chip" id="engineChip">
+        <i class="dot"></i><span id="engineName">local</span>
+      </div>
+      <div class="tz" id="tzLabel">GMT+5:30</div>
+    </div>
+  </aside>
+
+  <!-- ── main ────────────────────────────────────────────── -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="viewTitle">Dashboard</h1>
+        <p class="sub" id="viewSub">—</p>
+      </div>
+      <div class="topbar-actions">
+        <input type="search" id="search" placeholder="Search everything…" autocomplete="off">
+        <button class="btn btn-ghost" id="themeBtn" title="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <section class="view is-active" id="view-dashboard">
+      <div class="stats" id="stats"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Focus now</h2></div>
+          <div id="focus"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Today</h2><span class="muted" id="todayDate"></span></div>
+          <div id="todayList" class="list"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Due soon</h2><button class="btn btn-mini" data-quick="add">+ Task</button></div>
+          <div id="dueList" class="list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Conflicts</h2></div>
+          <div id="conflictList" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-tasks">
+      <div class="toolbar">
+        <div class="tabs" id="taskTabs">
+          <button class="tab is-active" data-scope="open">Open</button>
+          <button class="tab" data-scope="today">Today</button>
+          <button class="tab" data-scope="overdue">Overdue</button>
+          <button class="tab" data-scope="done">Done</button>
+          <button class="tab" data-scope="all">All</button>
+        </div>
+        <button class="btn btn-primary" data-quick="add">+ New task</button>
+      </div>
+      <div class="card"><div id="taskList" class="list"></div></div>
+    </section>
+
+    <section class="view" id="view-schedule">
+      <div class="toolbar">
+        <div class="daynav">
+          <button class="btn btn-ghost" id="dayPrev">‹</button>
+          <input type="date" id="dayPicker">
+          <button class="btn btn-ghost" id="dayNext">›</button>
+        </div>
+        <button class="btn btn-primary" data-quick="addevent">+ Block time</button>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Agenda</h2><span class="muted" id="agendaCount"></span></div>
+          <div id="agenda" class="timeline"></div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:14px">
+            <div class="card-head"><h2>Conflicts</h2></div>
+            <div id="dayConflicts" class="list"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Free time</h2></div>
+            <div id="freeSlots" class="list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-drafts">
+      <div class="toolbar"><button class="btn btn-primary" data-quick="adddraft">+ New draft</button></div>
+      <div class="card"><div id="draftList" class="list"></div></div>
+    </section>
+
+    <section class="view" id="view-memory">
+      <div class="card">
+        <div class="card-head"><h2>Working memory</h2>
+          <form id="memForm" class="inline-form">
+            <input id="memText" placeholder="Remember something durable…" required>
+            <select id="memKind">
+              <option value="fact">fact</option>
+              <option value="preference">preference</option>
+              <option value="commitment">commitment</option>
+              <option value="project">project</option>
+            </select>
+            <button class="btn btn-primary">Save</button>
+          </form>
+        </div>
+        <div id="memList" class="list"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Intelligence layer</h2></div>
+          <p class="hint">Works fully offline out of the box. Connect a free model below to unlock
+             free-form reasoning — the same 15 tools either way.</p>
+
+          <label>Provider</label>
+          <select id="setProvider">
+            <option value="hybrid">Smart hybrid — local first, cloud when needed (Recommended)</option>
+            <option value="local">Local only — fully offline, never sends anything</option>
+            <option value="openai">Cloud for everything — every message goes to the model</option>
+          </select>
+
+          <label>Free provider</label>
+          <select id="setPreset"></select>
+          <p class="hint" id="presetNote"></p>
+
+          <label>Base URL</label>
+          <input id="setBaseUrl" placeholder="https://generativelanguage.googleapis.com/v1beta/openai">
+
+          <label>API key <em id="keyHint"></em></label>
+          <input id="setApiKey" type="password" placeholder="Paste your key" autocomplete="off">
+          <p class="hint">Stored only in your local <code>agent.db</code>, sent only to the endpoint
+             above. It is never written to this chat.</p>
+
+          <label>Model</label>
+          <select id="setModel"></select>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="saveLlm">Save</button>
+            <button class="btn" id="testLlm">Test connection</button>
+            <button class="btn btn-ghost" id="clearKey" hidden>Remove key</button>
+          </div>
+          <div class="status" id="llmStatus"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>You</h2></div>
+          <label>Name</label><input id="setOwner">
+          <label>Timezone</label><input id="setTz" placeholder="Asia/Kolkata">
+          <label>Extra instructions <em>· appended to the system prompt</em></label>
+          <textarea id="setPrompt" rows="4" placeholder="e.g. Keep drafts under 120 words."></textarea>
+          <button class="btn btn-primary" id="saveSelf">Save</button>
+          <div class="status" id="selfStatus"></div>
+          <div class="card-head" style="margin-top:22px"><h2>Tools</h2></div>
+          <div id="toolList" class="tool-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── assistant ───────────────────────────────────────── -->
+  <aside class="assistant">
+    <div class="assistant-head">
+      <h2>Assistant</h2>
+      <span class="engine-chip small" id="engineChip2"><i class="dot"></i><span id="engineName2">local</span></span>
+    </div>
+    <div class="chat" id="chat">
+      <div class="msg bot">
+        <div class="bubble">Ask me to capture tasks, block time, or draft something. I run locally by default — connect a key in Settings for free-form requests.</div>
+      </div>
+    </div>
+    <form class="chat-input" id="chatForm">
+      <textarea id="chatInput" rows="1" placeholder="e.g. block 4–6pm tomorrow for the lab report"></textarea>
+      <button class="btn btn-primary" type="submit">↑</button>
+    </form>
+  </aside>
+</div>
+
+<!-- ── modal ─────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal">
+    <div class="card-head"><h2 id="modalTitle">New</h2><button class="btn btn-ghost" id="modalClose">✕</button></div>
+    <form id="modalForm" class="form">
+      <div id="modalFields"></div>
+      <div class="modal-foot">
+        <span class="muted" id="modalNote"></span>
+        <button type="button" class="btn btn-ghost" id="modalCancel">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
